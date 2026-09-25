@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPX 合併工具｜跑步停錶分段合併成一個活動 · Merge GPX Files Online</title>
+<meta name="description" content="免費線上 GPX 合併工具：手錶不小心停錶，一次跑步、騎車被拆成好幾個活動時，把多個 GPX 檔依時間合併成一個活動，保留心率、步頻、海拔，可匯入 Garmin Connect、Strava。檔案只在瀏覽器處理，不會上傳。Merge multiple GPX files into one activity.">
+<meta name="keywords" content="GPX 合併, 合併 GPX, GPX 檔案合併, 跑步 停錶, 不小心停錶, 活動合併, Garmin 合併活動, Garmin Connect 合併, Strava 合併活動, Coros 合併, 軌跡合併, 心率, 步頻, merge GPX, GPX merge, combine GPX files, join GPX tracks, merge Garmin activities, merge Strava activities, GPX joiner">
+<link rel="canonical" href="https://easterjhan.github.io/gpx-merge/">
+<meta property="og:url" content="https://easterjhan.github.io/gpx-merge/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GPX 合併工具｜跑步停錶分段合併成一個活動">
+<meta property="og:description" content="把被停錶拆開的多段 GPX 依時間接成一個活動，保留心率、步頻、海拔，可匯入 Garmin Connect、Strava。純瀏覽器處理，不上傳。">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"GPX 合併工具 (GPX Merge)","alternateName":["GPX 分段合併","Merge GPX Files"],"applicationCategory":"SportsApplication","operatingSystem":"Any (web browser)","inLanguage":["zh-Hant","en"],"offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"description":"Merge multiple GPX files (split by an accidental watch stop) into one activity, keeping heart rate, cadence and elevation. Works with Garmin Connect, Strava, Coros. Runs entirely in the browser."}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"手錶不小心停錶，一次跑步變成兩個活動，要怎麼合併？","acceptedAnswer":{"@type":"Answer","text":"從 Garmin Connect 或 Strava 把兩個活動各自匯出成 GPX，拖進本工具，按「合併並下載」，再把合併後的 GPX 匯入回去，並刪除原本的兩個活動。"}},
+{"@type":"Question","name":"合併後的 GPX 怎麼匯入 Garmin Connect？","acceptedAnswer":{"@type":"Answer","text":"在 Garmin Connect 網頁版右上角的上傳圖示選「匯入資料」，選擇合併後的 .gpx 檔即可。"}},
+{"@type":"Question","name":"心率、步頻會不會不見？","acceptedAnswer":{"@type":"Answer","text":"不會。每個軌跡點的時間、海拔、心率、步頻等擴充資料都原樣保留，只是接在一起。"}},
+{"@type":"Question","name":"檔案會上傳到伺服器嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。所有處理都在你的瀏覽器裡完成，GPX 檔不會離開你的電腦或手機。"}},
+{"@type":"Question","name":"How do I merge multiple GPX files into one activity?","acceptedAnswer":{"@type":"Answer","text":"Export each activity as GPX, drop them into this page, choose single segment or keep segments, and download the merged GPX. Then import it into Garmin Connect or Strava."}}
+]}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#EEF2F0; --panel:#FFFFFF; --ink:#15201C; --muted:#5B6964; --line:#D3DCD8; --soft:#E3EAE7;
+  --accent:#0E7466; --accent-ink:#FFFFFF; --warn:#B45309; --warn-bg:#FDF1E3; --gap:#8A9792;
+  --c1:#0E7466; --c2:#D9480F; --c3:#5F3DC4; --c4:#1971C2; --c5:#C2255C; --c6:#8F6B00;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1614; --panel:#17211E; --ink:#E4ECE9; --muted:#95A5A0; --line:#2A3833; --soft:#1F2B27;
+    --accent:#3DBFA9; --accent-ink:#06201B; --warn:#F0A956; --warn-bg:#2E2213; --gap:#6E7D78;
+    --c1:#3DBFA9; --c2:#FF8A4C; --c3:#A58BFF; --c4:#5AA9F0; --c5:#F06595; --c6:#E0B53C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1614; --panel:#17211E; --ink:#E4ECE9; --muted:#95A5A0; --line:#2A3833; --soft:#1F2B27;
+  --accent:#3DBFA9; --accent-ink:#06201B; --warn:#F0A956; --warn-bg:#2E2213; --gap:#6E7D78;
+  --c1:#3DBFA9; --c2:#FF8A4C; --c3:#A58BFF; --c4:#5AA9F0; --c5:#F06595; --c6:#E0B53C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 48px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px;margin-bottom:22px}
+h1{font-family:var(--display);font-weight:700;font-size:40px;line-height:1;letter-spacing:.01em;margin:0;text-wrap:balance}
+h1 small{font-family:var(--mono);font-weight:400;font-size:13px;color:var(--muted);letter-spacing:0;margin-left:10px;vertical-align:middle}
+.lede{color:var(--muted);margin:6px 0 0;max-width:60ch}
+.grid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.label{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.pill{font-family:var(--body);font-size:11.5px;letter-spacing:.02em;text-transform:none;font-weight:500;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--muted)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;border:1.5px dashed var(--line);border-radius:10px;padding:22px 14px;cursor:pointer;background:var(--panel);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--soft)}
+.drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.drop strong{font-weight:700}
+.drop span{color:var(--muted);font-size:13px}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
+.files{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0}
+.file{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:4px 10px;align-items:start;padding:10px 10px 10px 0;border-bottom:1px solid var(--soft)}
+.file:last-child{border-bottom:0}
+.sw{width:10px;height:100%;min-height:38px;border-radius:3px}
+.fname{font-weight:500;overflow-wrap:anywhere;font-size:14px}
+.fmeta{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;gap:2px 12px}
+.x{border:0;background:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:6px}
+.x:hover{background:var(--soft);color:var(--ink)}
+.x:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gaprow{font-family:var(--mono);font-size:12px;color:var(--gap);padding:2px 0 2px 20px;display:flex;gap:10px;flex-wrap:wrap}
+.empty{color:var(--muted);font-size:13px}
+
+.opts{display:flex;flex-direction:column;gap:12px}
+.radio{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.radio:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.radio input{margin-top:5px;accent-color:var(--accent)}
+.radio b{font-weight:500}
+.radio small{grid-column:2;color:var(--muted);font-size:12.5px;line-height:1.5}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:13px;color:var(--muted)}
+.field input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:100%}
+.go{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.04em;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 16px;cursor:pointer;width:100%}
+.go:disabled{opacity:.45;cursor:not-allowed}
+.status{font-size:13px;color:var(--muted);min-height:1.4em;margin:8px 0 0}
+.status.err{color:var(--warn)}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.55}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{padding:12px 14px;border-right:1px solid var(--soft);border-bottom:1px solid var(--soft)}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .v{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .v u{text-decoration:none;font-size:16px;color:var(--muted);margin-left:3px;font-weight:500}
+.stat .s{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+
+.mapbox{position:relative;width:100%;aspect-ratio:16/10;max-width:100%;background:var(--bg);border-radius:8px;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--gap) 0 4px,transparent 4px 7px)}
+
+.tl{position:relative;height:30px;background:repeating-linear-gradient(135deg,var(--soft) 0 5px,transparent 5px 10px);border-radius:6px;overflow:hidden}
+.tl div{position:absolute;top:0;bottom:0;border-radius:4px}
+.tlax{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.faq{margin-top:36px;max-width:760px}
+.faq h2{font-family:var(--display);font-weight:700;font-size:26px;margin:28px 0 10px}
+.faq details{border-bottom:1px solid var(--line);padding:10px 0}
+.faq summary{cursor:pointer;font-weight:500}
+.faq p{color:var(--muted);margin:8px 0 2px;max-width:65ch}
+.foot{margin-top:32px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--accent)}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>GPX 分段合併<small>Garmin · Strava · Coros GPX 1.1</small></h1>
+      <p class="lede">不小心停錶、一次跑步被拆成好幾個活動時，把各段 GPX 丟進來，會依時間排好接成一個活動。心率、步頻、海拔等每點資料和原始格式都會保留。</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="col">
+      <label class="drop" id="drop" for="fileIn">
+        <input type="file" id="fileIn" accept=".gpx,application/gpx+xml" multiple>
+        <strong>選擇或拖入 GPX 檔</strong>
+        <span>可一次選多個，也可分批加入</span>
+      </label>
+
+      <section class="panel">
+        <p class="label">分段 <span class="pill" id="sampleTag">範例資料</span><span class="pill warn" id="overlapTag" hidden>時間重疊</span></p>
+        <ul class="files" id="list"></ul>
+      </section>
+
+      <section class="panel opts">
+        <p class="label" style="margin:0">輸出</p>
+        <label class="radio"><input type="radio" name="mode" id="modeOne" value="one" checked><b>接成單一軌跡段</b><small>和手錶原本的格式一樣，一個 trkseg。停錶期間在地圖上會連成直線，這段直線距離會算進總距離。</small></label>
+        <label class="radio"><input type="radio" name="mode" id="modeSeg" value="seg"><b>保留分段</b><small>一個活動、每段一個 trkseg。停錶期間不會算進距離，Garmin Connect 與 Strava 都讀得懂。</small></label>
+        <div class="field"><label for="nameIn">活動名稱</label><input id="nameIn" type="text" autocomplete="off"></div>
+        <div class="field"><label for="fnIn">檔名</label><input id="fnIn" type="text" autocomplete="off"></div>
+        <div>
+          <button class="go" id="goBtn">合併並下載</button>
+          <p class="status" id="status" role="status"></p>
+          <p class="note" id="dlNote"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col">
+      <div class="stats" id="stats"></div>
+      <section class="panel">
+        <p class="label">軌跡</p>
+        <div class="mapbox"><canvas id="map" aria-label="合併後的軌跡圖"></canvas></div>
+        <div class="legend" id="legend"></div>
+      </section>
+      <section class="panel">
+        <p class="label">時間軸</p>
+        <div class="tl" id="tl"></div>
+        <div class="tlax" id="tlax"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="faq" id="faq">
+    <h2>常見問題</h2>
+    <details open><summary>手錶不小心停錶，一次跑步變成兩個活動，怎麼合併？</summary>
+      <p>到 Garmin Connect、Strava 或 Coros 把每個活動匯出成 GPX（Garmin Connect 網頁：活動頁右上角齒輪 → 匯出為 GPX；Strava：活動頁「⋯」→ 匯出 GPX）。把這些檔案一起拖進上方，按「合併並下載」，再把合併後的檔案匯入回去，並刪除原本那幾個活動，避免里程重複。</p></details>
+    <details><summary>「接成單一軌跡段」和「保留分段」差在哪？</summary>
+      <p>單一軌跡段跟手錶原本的格式一樣，停錶期間在地圖上會連成直線，那段直線距離會算進總距離。保留分段則是一個活動裡每段各一個 trkseg，停錶期間不計距離。Garmin Connect 與 Strava 都讀得懂這兩種格式。</p></details>
+    <details><summary>心率、步頻、海拔會不見嗎？</summary>
+      <p>不會。每個軌跡點的時間、海拔、心率、步頻，以及其他擴充欄位都原樣保留。檔頭與命名空間也沿用第一個檔案，所以輸出格式跟手錶匯出的一樣。</p></details>
+    <details><summary>支援哪些手錶或 App？</summary>
+      <p>只要是標準 GPX 1.1 檔都可以，例如 Garmin、Coros、Suunto、Polar，或從 Strava 匯出的 GPX。跑步、騎車、健行、游泳（開放水域）都適用。</p></details>
+    <details><summary>我的檔案會被上傳嗎？</summary>
+      <p>不會。這是純前端網頁，所有處理都在你的瀏覽器裡完成，沒有伺服器，也不收集任何資料。</p></details>
+    <details><summary>匯入 Garmin Connect 後有什麼要注意的？</summary>
+      <p>由 GPX 匯入的活動沒有手錶原始 FIT 檔裡的部分指標，例如訓練效果、跑步動態、分段圈數。距離、時間、配速、心率、步頻、軌跡都會正常顯示。</p></details>
+    <h2 lang="en">Merge GPX files online (English)</h2>
+    <p lang="en">Accidentally stopped your watch mid-run and ended up with two or more activities? Drop the GPX files here: they are sorted by time and joined into one activity, keeping heart rate, cadence and elevation. You can output one continuous track segment (the same as the original watch export) or keep the segments, so the paused gap does not add distance. Works with Garmin Connect, Strava, Coros, Suunto and Polar exports. Everything runs locally in your browser, and nothing is uploaded.</p>
+  </section>
+  <footer class="foot"><a href="https://github.com/EasterJhan/gpx-merge">原始碼 GitHub</a> · MIT License</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const COLORS=["--c1","--c2","--c3","--c4","--c5","--c6"];
+let files=[];          // {id,name,text,doc,pts,segs,start,end,dist,hrAvg,trkName}
+let isSample=true;
+let uid=0;
+const inClaude=typeof window.claude!=="undefined"&&window.claude&&typeof window.claude.use==="function";
+
+/* ---------- parsing ---------- */
+function hav(a,b){const R=6371008.8,r=Math.PI/180;const dLa=(b.lat-a.lat)*r,dLo=(b.lon-a.lon)*r;
+  const h=Math.sin(dLa/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+function childText(el,local){for(const c of el.children){if(c.localName===local)return c.textContent.trim();}return null;}
+function deepText(el,local){const n=el.getElementsByTagNameNS("*",local)[0];return n?n.textContent.trim():null;}
+
+function parseGpx(name,text){
+  const doc=new DOMParser().parseFromString(text,"application/xml");
+  if(doc.getElementsByTagName("parsererror").length) throw new Error(name+" 不是有效的 XML");
+  if(doc.documentElement.localName!=="gpx") throw new Error(name+" 不是 GPX 檔");
+  const segEls=[...doc.getElementsByTagNameNS("*","trkseg")];
+  if(!segEls.length) throw new Error(name+" 裡沒有軌跡點 (trkseg)");
+  const segs=[];let pts=[];
+  for(const s of segEls){
+    const arr=[];
+    for(const p of s.children){ if(p.localName!=="trkpt")continue;
+      const t=childText(p,"time");const hr=deepText(p,"hr");
+      arr.push({el:p,lat:+p.getAttribute("lat"),lon:+p.getAttribute("lon"),t:t?Date.parse(t):NaN,hr:hr!=null?+hr:null});
+    }
+    if(arr.length){segs.push(arr);pts=pts.concat(arr);}
+  }
+  if(!pts.length) throw new Error(name+" 裡沒有軌跡點");
+  let dist=0;for(const s of segs)for(let i=1;i<s.length;i++)dist+=hav(s[i-1],s[i]);
+  const hrs=pts.filter(p=>p.hr!=null&&p.hr>0);
+  const times=pts.map(p=>p.t).filter(Number.isFinite);
+  const trk=doc.getElementsByTagNameNS("*","trk")[0];
+  const trkName=trk?childText(trk,"name"):null;
+  return {id:++uid,name,text,doc,pts,segs,dist,
+    start:times.length?Math.min(...times):NaN,end:times.length?Math.max(...times):NaN,
+    hrAvg:hrs.length?hrs.reduce((a,p)=>a+p.hr,0)/hrs.length:null,trkName};
+}
+
+/* ---------- merge ---------- */
+function buildMerged(list,mode,actName){
+  const tpl=new DOMParser().parseFromString(list[0].text,"application/xml");
+  const root=tpl.documentElement,NS=root.namespaceURI;
+  let addedNs=false;
+  for(const f of list.slice(1)) for(const a of f.doc.documentElement.attributes){
+    if(a.name.startsWith("xmlns:")&&!root.hasAttribute(a.name)){root.setAttributeNS("http://www.w3.org/2000/xmlns/",a.name,a.value);addedNs=true;}
+  }
+  const trks=[...root.children].filter(c=>c.localName==="trk");
+  const trk=trks[0];
+  for(const t of trks.slice(1)){const pv=t.previousSibling;if(pv&&pv.nodeType===3&&!pv.textContent.trim())pv.remove();t.remove();}
+  const firstSeg=[...trk.children].find(c=>c.localName==="trkseg");
+  const segInd=(firstSeg.previousSibling&&firstSeg.previousSibling.nodeType===3)?firstSeg.previousSibling.textContent:"\n    ";
+  const fp=[...firstSeg.children].find(c=>c.localName==="trkpt");
+  const ptInd=(fp&&fp.previousSibling&&fp.previousSibling.nodeType===3)?fp.previousSibling.textContent:segInd+"  ";
+  for(const s of [...trk.children].filter(c=>c.localName==="trkseg")){const pv=s.previousSibling;if(pv&&pv.nodeType===3&&!pv.textContent.trim())pv.remove();s.remove();}
+  let tail=trk.lastChild;
+  if(!(tail&&tail.nodeType===3&&!tail.textContent.trim())){tail=tpl.createTextNode(segInd.replace(/  $/,""));trk.appendChild(tail);}
+
+  // name
+  let nm=[...trk.children].find(c=>c.localName==="name");
+  if(actName){ if(!nm){nm=tpl.createElementNS(NS,"name");trk.insertBefore(nm,trk.firstElementChild);trk.insertBefore(tpl.createTextNode(segInd),nm);} nm.textContent=actName; }
+
+  // groups of points
+  let groups;
+  if(mode==="one"){
+    let all=list.flatMap(f=>f.pts);
+    if(all.every(p=>Number.isFinite(p.t))){
+      all=all.slice().sort((a,b)=>a.t-b.t);
+      all=all.filter((p,i)=>i===0||p.t!==all[i-1].t);
+    }
+    groups=[all];
+  } else groups=list.flatMap(f=>f.segs);
+
+  let nPts=0;
+  for(const g of groups){
+    const seg=tpl.createElementNS(NS,"trkseg");
+    for(const p of g){seg.appendChild(tpl.createTextNode(ptInd));seg.appendChild(tpl.importNode(p.el,true));nPts++;}
+    seg.appendChild(tpl.createTextNode(segInd));
+    trk.insertBefore(tpl.createTextNode(segInd),tail);
+    trk.insertBefore(seg,tail);
+  }
+  // metadata time = earliest
+  const starts=list.map(f=>f.start).filter(Number.isFinite);
+  const md=[...root.children].find(c=>c.localName==="metadata");
+  if(md&&starts.length){const tm=[...md.children].find(c=>c.localName==="time");
+    if(tm){const orig=tm.textContent.trim();const d=new Date(Math.min(...starts));
+      tm.textContent=/\.\d{3}Z$/.test(orig)?d.toISOString():d.toISOString().replace(/\.\d{3}Z$/,"Z");}}
+  let xml=new XMLSerializer().serializeToString(tpl).replace(/^<\?xml[^>]*\?>\s*/,"");
+  if(!addedNs){const orig=(list[0].text.match(/<gpx\b[^>]*>/)||[])[0];if(orig)xml=xml.replace(/^<gpx\b[^>]*>/,orig);}
+  const decl=(list[0].text.match(/^\s*(<\?xml[^>]*\?>)/)||[])[1]||'<?xml version="1.0" encoding="UTF-8"?>';
+  return {xml:decl+"\n"+xml+(xml.endsWith("\n")?"":"\n"),nPts,nSegs:groups.length};
+}
+
+/* ---------- zip (store) ---------- */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(b){let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CRC[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zipOne(name,data){
+  const enc=new TextEncoder(),nb=enc.encode(name),crc=crc32(data),d=new Date();
+  const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF,dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+  const L=new DataView(new ArrayBuffer(30));
+  L.setUint32(0,0x04034b50,true);L.setUint16(4,20,true);L.setUint16(6,0x0800,true);L.setUint16(8,0,true);L.setUint16(10,dt,true);L.setUint16(12,dd,true);
+  L.setUint32(14,crc,true);L.setUint32(18,data.length,true);L.setUint32(22,data.length,true);L.setUint16(26,nb.length,true);L.setUint16(28,0,true);
+  const C=new DataView(new ArrayBuffer(46));
+  C.setUint32(0,0x02014b50,true);C.setUint16(4,20,true);C.setUint16(6,20,true);C.setUint16(8,0x0800,true);C.setUint16(10,0,true);C.setUint16(12,dt,true);C.setUint16(14,dd,true);
+  C.setUint32(16,crc,true);C.setUint32(20,data.length,true);C.setUint32(24,data.length,true);C.setUint16(28,nb.length,true);C.setUint32(42,0,true);
+  const cdOff=30+nb.length+data.length,cdLen=46+nb.length;
+  const E=new DataView(new ArrayBuffer(22));
+  E.setUint32(0,0x06054b50,true);E.setUint16(8,1,true);E.setUint16(10,1,true);E.setUint32(12,cdLen,true);E.setUint32(16,cdOff,true);
+  return new Blob([L,nb,data,C,nb,E],{type:"application/zip"});
+}
+
+/* ---------- formatting ---------- */
+const pad=n=>String(n).padStart(2,"0");
+function hms(ms){if(!Number.isFinite(ms))return "—";const s=Math.round(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${h}:${pad(m)}:${pad(x)}`:`${m}:${pad(x)}`;}
+function clock(t){if(!Number.isFinite(t))return "—";const d=new Date(t);return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
+function day(t){if(!Number.isFinite(t))return "";const d=new Date(t);return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;}
+const km=m=>(m/1000).toFixed(2);
+function pace(ms,m){if(!(m>0)||!Number.isFinite(ms))return "—";const s=ms/1000/(m/1000);return `${Math.floor(s/60)}:${pad(Math.round(s%60)%60)}`;}
+const cssv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const colorOf=i=>`var(${COLORS[i%COLORS.length]})`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- state ops ---------- */
+function sortFiles(){files.sort((a,b)=>(Number.isFinite(a.start)?a.start:Infinity)-(Number.isFinite(b.start)?b.start:Infinity));}
+function gaps(){const g=[];for(let i=1;i<files.length;i++){const a=files[i-1],b=files[i];
+  g.push({dt:b.start-a.end,dd:hav(a.pts[a.pts.length-1],b.pts[0])});}return g;}
+
+async function addFiles(fileList){
+  const incoming=[...fileList];if(!incoming.length)return;
+  if(isSample){files=[];isSample=false;$("nameIn").value="";$("fnIn").value="";}
+  const errs=[];let dup=0;
+  for(const f of incoming){
+    try{const text=await f.text();const p=parseGpx(f.name,text);
+      if(files.some(x=>x.start===p.start&&x.pts.length===p.pts.length)){dup++;continue;}
+      files.push(p);}catch(e){errs.push(e.message);}
+  }
+  sortFiles();render();
+  const msg=[];if(errs.length)msg.push(errs.join("；"));if(dup)msg.push(`略過 ${dup} 個重複檔`);
+  setStatus(msg.join("。"),errs.length>0);
+}
+function setStatus(t,err){const s=$("status");s.textContent=t||"";s.classList.toggle("err",!!err);}
+
+/* ---------- render ---------- */
+function render(){
+  $("sampleTag").hidden=!isSample;
+  const g=gaps();
+  $("overlapTag").hidden=!g.some(x=>x.dt<0);
+  const ul=$("list");ul.innerHTML="";
+  if(!files.length){ul.innerHTML='<li class="empty">還沒有檔案。至少加入兩段才能合併。</li>';}
+  files.forEach((f,i)=>{
+    if(i>0){const x=g[i-1];const li=document.createElement("li");li.className="gaprow";
+      li.innerHTML=x.dt<0?`<span style="color:var(--warn)">與上一段重疊 ${hms(-x.dt)}</span>`:`<span>停錶 ${hms(x.dt)}</span><span>位移 ${Math.round(x.dd)} m</span>`;ul.appendChild(li);}
+    const li=document.createElement("li");li.className="file";
+    li.innerHTML=`<span class="sw" style="background:${colorOf(i)}"></span>
+      <div><div class="fname">${esc(f.name)}</div>
+      <div class="fmeta"><span>${day(f.start)} ${clock(f.start)}–${clock(f.end)}</span><span>${hms(f.end-f.start)}</span><span>${km(f.dist)} km</span><span>${f.pts.length} 點</span>${f.hrAvg?`<span>♥ ${Math.round(f.hrAvg)}</span>`:""}${f.segs.length>1?`<span>${f.segs.length} 段</span>`:""}</div></div>
+      <button class="x" aria-label="移除 ${esc(f.name)}" data-id="${f.id}">×</button>`;
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll(".x").forEach(b=>b.onclick=()=>{files=files.filter(f=>f.id!==+b.dataset.id);render();setStatus("");});
+
+  if(files.length){
+    const n=$("nameIn"),fn=$("fnIn");
+    if(!n.value)n.value=files[0].trkName||"";
+    if(!fn.value){const base=files[0].name.replace(/\.gpx$/i,"");fn.value=(isSample?"範例":base)+"_合併";}
+  }
+  $("goBtn").disabled=files.length<2;
+  renderStats(g);renderTimeline();drawMap();
+}
+
+function renderStats(g){
+  const mode=document.querySelector('input[name=mode]:checked').value;
+  const segDist=files.reduce((a,f)=>a+f.dist,0),gapDist=g.reduce((a,x)=>a+Math.max(0,x.dd),0);
+  const moving=files.reduce((a,f)=>a+(f.end-f.start),0);
+  const t0=files.length?Math.min(...files.map(f=>f.start)):NaN,t1=files.length?Math.max(...files.map(f=>f.end)):NaN;
+  const hrN=files.reduce((a,f)=>a+(f.hrAvg?f.pts.length:0),0),hr=hrN?files.reduce((a,f)=>a+(f.hrAvg?f.hrAvg*f.pts.length:0),0)/hrN:null;
+  const dist=mode==="one"?segDist+gapDist:segDist;
+  const stopT=g.reduce((a,x)=>a+Math.max(0,x.dt),0);
+  const cells=[
+    ["距離",`${km(dist)}<u>km</u>`,mode==="one"&&gapDist>0?`含停錶間直線 ${Math.round(gapDist)} m`:`${files.length} 段加總`],
+    ["各段時間合計",hms(moving),`總經過 ${hms(t1-t0)}`],
+    ["平均配速",`${pace(moving,segDist)}<u>/km</u>`,"以各段距離與時間計"],
+    ["停錶",`${g.filter(x=>x.dt>0).length}<u>次</u>`,stopT?`共 ${hms(stopT)}`:(hr?`平均心率 ${Math.round(hr)}`:"—")],
+  ];
+  $("stats").innerHTML=cells.map(c=>`<div class="stat"><div class="k">${c[0]}</div><div class="v">${files.length?c[1]:"—"}</div><div class="s">${files.length?c[2]:""}</div></div>`).join("");
+}
+
+function renderTimeline(){
+  const tl=$("tl"),ax=$("tlax");tl.innerHTML="";ax.innerHTML="";
+  const fs=files.filter(f=>Number.isFinite(f.start));if(!fs.length)return;
+  const t0=Math.min(...fs.map(f=>f.start)),t1=Math.max(...fs.map(f=>f.end)),span=Math.max(1,t1-t0);
+  files.forEach((f,i)=>{if(!Number.isFinite(f.start))return;const d=document.createElement("div");
+    d.style.left=((f.start-t0)/span*100)+"%";d.style.width=Math.max(.6,(f.end-f.start)/span*100)+"%";
+    d.style.background=colorOf(i);d.title=`${f.name}  ${clock(f.start)}–${clock(f.end)}`;tl.appendChild(d);});
+  ax.innerHTML=`<span>${clock(t0)}</span><span>${clock(t1)}</span>`;
+}
+
+/* ---------- map ---------- */
+function drawMap(){
+  const cv=$("map"),box=cv.parentElement,dpr=window.devicePixelRatio||1;
+  const W=box.clientWidth,H=box.clientHeight;if(!W||!H)return;
+  cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
+  const lg=$("legend");
+  if(!files.length){c.fillStyle=cssv("--muted");c.font="14px "+cssv("--body");c.textAlign="center";c.fillText("加入 GPX 檔後在這裡顯示軌跡",W/2,H/2);lg.innerHTML="";return;}
+  const all=files.flatMap(f=>f.pts);
+  let la0=Infinity,la1=-Infinity,lo0=Infinity,lo1=-Infinity;
+  for(const p of all){if(p.lat<la0)la0=p.lat;if(p.lat>la1)la1=p.lat;if(p.lon<lo0)lo0=p.lon;if(p.lon>lo1)lo1=p.lon;}
+  const k=Math.cos((la0+la1)/2*Math.PI/180);
+  const w=Math.max((lo1-lo0)*k,1e-6),h=Math.max(la1-la0,1e-6),padd=28;
+  const sc=Math.min((W-2*padd)/w,(H-2*padd)/h);
+  const ox=(W-w*sc)/2,oy=(H-h*sc)/2;
+  const X=p=>ox+(p.lon-lo0)*k*sc,Y=p=>H-oy-(p.lat-la0)*sc;
+  // grid: 100 m / 500 m scale bar
+  const mPerPx=1/sc*111320;let bar=[50,100,200,500,1000,2000,5000].find(v=>v/mPerPx>60)||5000;
+  c.strokeStyle=cssv("--muted");c.fillStyle=cssv("--muted");c.lineWidth=1.5;
+  const bx=14,by=H-14,bl=bar/mPerPx;c.beginPath();c.moveTo(bx,by-5);c.lineTo(bx,by);c.lineTo(bx+bl,by);c.lineTo(bx+bl,by-5);c.stroke();
+  c.font="11px "+cssv("--mono");c.textAlign="left";c.fillText(bar>=1000?bar/1000+" km":bar+" m",bx+bl+6,by);
+  // gaps
+  c.setLineDash([5,5]);c.strokeStyle=cssv("--gap");c.lineWidth=2;
+  for(let i=1;i<files.length;i++){const a=files[i-1].pts.at(-1),b=files[i].pts[0];c.beginPath();c.moveTo(X(a),Y(a));c.lineTo(X(b),Y(b));c.stroke();}
+  c.setLineDash([]);
+  // tracks
+  c.lineJoin="round";c.lineCap="round";c.lineWidth=3;
+  files.forEach((f,i)=>{c.strokeStyle=cssv(COLORS[i%COLORS.length]);for(const s of f.segs){c.beginPath();s.forEach((p,j)=>j?c.lineTo(X(p),Y(p)):c.moveTo(X(p),Y(p)));c.stroke();}});
+  // start / end markers
+  const st=files[0].pts[0],en=files.at(-1).pts.at(-1);
+  c.fillStyle=cssv("--panel");c.strokeStyle=cssv("--ink");c.lineWidth=2;
+  c.beginPath();c.arc(X(st),Y(st),6,0,7);c.fill();c.stroke();
+  c.fillStyle=cssv("--ink");c.fillRect(X(en)-5,Y(en)-5,10,10);
+  lg.innerHTML=files.map((f,i)=>`<span><i style="background:${colorOf(i)}"></i>第 ${i+1} 段</span>`).join("")+
+    (files.length>1?`<span><i class="dash"></i>停錶間直線</span>`:"")+`<span>○ 起點 ■ 終點</span>`;
+}
+
+/* ---------- download ---------- */
+let dl=null;
+if(inClaude){window.claude.use("downloads").then(d=>{dl=d;noteDl();}).catch(()=>{});}
+function noteDl(){ $("dlNote").textContent=inClaude
+  ?"在 Claude 內下載的是 .zip，解壓後就是 .gpx（此處不允許直接下載 .gpx）。把這頁存成 HTML 在本機開啟，就會直接下載 .gpx。"
+  :"檔案只在你的瀏覽器裡處理，不會上傳。"; }
+noteDl();
+
+$("goBtn").onclick=async()=>{
+  if(files.length<2)return;
+  const mode=document.querySelector('input[name=mode]:checked').value;
+  let out;
+  try{out=buildMerged(files,mode,$("nameIn").value.trim());}catch(e){setStatus("合併失敗："+e.message,true);return;}
+  const base=($("fnIn").value.trim()||"merged").replace(/[\\/:*?"<>|]+/g,"_").replace(/\.gpx$/i,"");
+  const bytes=new TextEncoder().encode(out.xml);
+  const summary=`${out.nPts} 點、${out.nSegs} 個軌跡段`;
+  if(inClaude){
+    if(!dl){setStatus("這個檢視無法下載檔案。請把這頁存成 HTML 在本機開啟使用。",true);return;}
+    try{await dl.save({filename:base+".zip",data:zipOne(base+".gpx",bytes)});setStatus(`已下載 ${base}.zip（${summary}）`);}
+    catch(e){const c=e&&e.code;setStatus(c==="declined"?"已取消下載。":c==="rate_limited"?"已有下載確認視窗開著，請先處理它。":"下載失敗："+((e&&e.message)||c),c!=="declined");}
+  }else{
+    const url=URL.createObjectURL(new Blob([bytes],{type:"application/gpx+xml"}));
+    const a=document.createElement("a");a.href=url;a.download=base+".gpx";document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);setStatus(`已下載 ${base}.gpx（${summary}）`);
+  }
+};
+
+/* ---------- inputs ---------- */
+$("fileIn").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
+const drop=$("drop");
+["dragenter","dragover"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();if(ev==="drop"||!e.relatedTarget)drop.classList.remove("over");}));
+document.addEventListener("drop",e=>{if(e.dataTransfer&&e.dataTransfer.files.length)addFiles(e.dataTransfer.files);});
+document.querySelectorAll('input[name=mode]').forEach(r=>r.addEventListener("change",()=>renderStats(gaps())));
+new ResizeObserver(()=>drawMap()).observe($("map").parentElement);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",drawMap);
+new MutationObserver(drawMap).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+/* ---------- sample (synthetic loop, not real data) ---------- */
+function sampleGpx(t0,n,phase,hr0){
+  const lat0=25.0330,lon0=121.5400,rows=[];
+  for(let i=0;i<n;i++){const a=phase+i*0.035,r=0.0042+0.0006*Math.sin(a*3);
+    const lat=lat0+r*Math.sin(a),lon=lon0+r*1.15*Math.cos(a),t=new Date(t0+i*3000).toISOString();
+    const hr=Math.round(hr0+18*(1-Math.exp(-i/40))+3*Math.sin(i/7)),cad=i<2?0:84+(i%3);
+    rows.push(`      <trkpt lat="${lat.toFixed(9)}" lon="${lon.toFixed(9)}">
+        <ele>${(12+2*Math.sin(a*2)).toFixed(1)}</ele>
+        <time>${t}</time>
+        <extensions>
+          <ns3:TrackPointExtension>
+            <ns3:hr>${hr}</ns3:hr>
+            <ns3:cad>${cad}</ns3:cad>
+          </ns3:TrackPointExtension>
+        </extensions>
+      </trkpt>`);}
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx creator="Garmin Connect" version="1.1"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd"
+  xmlns:ns3="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns2="http://www.garmin.com/xmlschemas/GpxExtensions/v3">
+  <metadata>
+    <link href="connect.garmin.com">
+      <text>Garmin Connect</text>
+    </link>
+    <time>${new Date(t0).toISOString()}</time>
+  </metadata>
+  <trk>
+    <name>範例 跑步</name>
+    <type>running</type>
+    <trkseg>
+${rows.join("\n")}
+    </trkseg>
+  </trk>
+</gpx>
+`;}
+const base=Date.UTC(2026,8,24,22,10,0);
+files=[parseGpx("範例_第1段.gpx",sampleGpx(base,110,0,120)),parseGpx("範例_第2段.gpx",sampleGpx(base+(110*3+420)*1000,120,110*0.035+0.35,138))];
+sortFiles();render();
+})();
+</script>
+</body>
+</html>

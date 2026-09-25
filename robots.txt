@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://easterjhan.github.io/gpx-merge/sitemap.xml
