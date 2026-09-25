@@ -478,7 +478,7 @@ new MutationObserver(drawMap).observe(document.documentElement,{attributes:true,
 /* ---------- sample (synthetic loop, not real data) ---------- */
 function sampleGpx(t0,n,phase,hr0){
   const lat0=25.0330,lon0=121.5400,rows=[];
-  for(let i=0;i<n;i++){const a=phase+i*0.035,r=0.0042+0.0006*Math.sin(a*3);
+  for(let i=0;i<n;i++){const a=phase+i*0.018,r=0.0042+0.0006*Math.sin(a*3);
     const lat=lat0+r*Math.sin(a),lon=lon0+r*1.15*Math.cos(a),t=new Date(t0+i*3000).toISOString();
     const hr=Math.round(hr0+18*(1-Math.exp(-i/40))+3*Math.sin(i/7)),cad=i<2?0:84+(i%3);
     rows.push(`      <trkpt lat="${lat.toFixed(9)}" lon="${lon.toFixed(9)}">
@@ -513,7 +513,7 @@ ${rows.join("\n")}
 </gpx>
 `;}
 const base=Date.UTC(2026,8,24,22,10,0);
-files=[parseGpx("範例_第1段.gpx",sampleGpx(base,110,0,120)),parseGpx("範例_第2段.gpx",sampleGpx(base+(110*3+420)*1000,120,110*0.035+0.35,138))];
+files=[parseGpx("範例_第1段.gpx",sampleGpx(base,180,0,120)),parseGpx("範例_第2段.gpx",sampleGpx(base+(180*3+420)*1000,200,180*0.018+0.35,138))];
 sortFiles();render();
 })();
 </script>
